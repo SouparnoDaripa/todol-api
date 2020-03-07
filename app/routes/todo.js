@@ -116,27 +116,6 @@ let setRouter = (app) => {
        }
      */
 
-    // app.post(`${baseUrl}/delete`, auth.isAuthenticated, userController.deleteUser);
-
-    /**
-     * @api {post} /api/v1/users/delete API for deleting user info
-     * @apiName API for deleting user info
-     * @apiGroup users
-     * @apiVersion 1.0.0
-     * 
-     * @apiParam {String} userId userId userId of the user to be deleted. (body parameters) (required)
-     * 
-     * @apiSuccess {object} myResponse shows error, status, message, http status code and data
-     * 
-     * @apiSuccessExample {json} Success-Response:
-       {
-        "error": false,
-        "message": "User deleted successfully",
-        "status": 200,
-        "data": null
-       }
-     */
-
     app.post(`${baseUrl}/:userId/remove`, auth.isAuthenticated, todoController.removeAllVersionsTodo);
 
     /**

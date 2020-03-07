@@ -10,7 +10,7 @@ const baseUrl = 'http://localhost:3002'
     let output = generateOutputMsg(type, email);
     let subject = generateSubject(type);
     mailOptions = {
-    from: '"Meeting Planner Admin" <admin@mplanner.com>', // sender address
+    from: '"TODOL App" <admin@mplanner.com>', // sender address
     to: email, // list of receivers
     subject: subject, // Subject line
     text: "If you are unable to read this mail. Please reply us to this email address.", // plain text body

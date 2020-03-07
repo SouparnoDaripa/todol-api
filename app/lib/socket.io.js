@@ -42,6 +42,7 @@ let setServer = (server) => {
         socket.on('notify', (data) => {
             // save the notification
             setTimeout(function(){
+                console.log("To Notify" + data.receiverId);
                 eventEmitter.emit('save-notification', data);
             },2000);
             
