@@ -42,12 +42,18 @@ let setServer = (server) => {
         socket.on('notify', (data) => {
             // save the notification
             setTimeout(function(){
-                console.log("To Notify" + data.receiverId);
+                // console.log("To Notify" + data.receiverId);
                 eventEmitter.emit('save-notification', data);
             },2000);
             
             // emit the notification to receiver
-            myIo.emit(data.receiverId, data);
+            if (Array.isArray(data.receiverId)) {
+                data.receiverId.forEach( receiverId =>{
+                    myIo.emit(receiverId, data);
+                });
+            } else {
+                myIo.emit(data.receiverId, data);
+            }
         });
     });
 
