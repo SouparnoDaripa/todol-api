@@ -47,6 +47,7 @@ let setServer = (server) => {
             },2000);
             
             // emit the notification to receiver
+            console.log("read in");
             if (Array.isArray(data.receiverId)) {
                 data.receiverId.forEach( receiverId =>{
                     myIo.emit(receiverId, data);
@@ -54,30 +55,55 @@ let setServer = (server) => {
             } else {
                 myIo.emit(data.receiverId, data);
             }
+            console.log("read out");
         });
     });
 
     eventEmitter.on('save-notification', (data) => {
-        let newNotification = new NotificationModel({
-            notificationId : shortid.generate(),
-            senderName : data.senderName,
-            senderId : data.senderId,
-            receiverName : data.receiverName || '',
-            receiverId: data.receiverId || '',
-            message: data.message,
-            createdOn: data.createdOn,
-            modifiedOn: data.createdOn
-        });
+        if (Array.isArray(data.receiverId)) {
+            data.receiverId.forEach(elem => {
+                let newNotification = new NotificationModel({
+                    notificationId : shortid.generate(),
+                    senderName : data.senderName,
+                    senderId : data.senderId,
+                    receiverName : data.receiverName || '',
+                    receiverId: elem || '',
+                    message: data.message,
+                    createdOn: data.createdOn,
+                    modifiedOn: data.createdOn
+                });
+                newNotification.save((err, result) => {
+                    if(err){
+                        console.log('Error occurred :' + err);
+                    } else if(result === undefined || result === null || result === ''){
+                        console.log("Notification not saved");
+                    } else{
+                        console.log("Notification saved");
+                    }
+                });
+            });
+        } else {
+            let newNotification = new NotificationModel({
+                notificationId : shortid.generate(),
+                senderName : data.senderName,
+                senderId : data.senderId,
+                receiverName : data.receiverName || '',
+                receiverId: data.receiverId || '',
+                message: data.message,
+                createdOn: data.createdOn,
+                modifiedOn: data.createdOn
+            });
 
-        newNotification.save((err, result) => {
-            if(err){
-                console.log('Error occurred :' + err);
-            } else if(result === undefined || result === null || result === ''){
-                console.log("Notification not saved");
-            } else{
-                console.log("Notification saved");
-            }
-        });
+            newNotification.save((err, result) => {
+                if(err){
+                    console.log('Error occurred :' + err);
+                } else if(result === undefined || result === null || result === ''){
+                    console.log("Notification not saved");
+                } else{
+                    console.log("Notification saved");
+                }
+            });
+        }
     });
 
 }

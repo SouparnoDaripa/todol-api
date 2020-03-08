@@ -210,7 +210,7 @@ let findAllFriendsByUserId = (req, res) => {
         }
         if(!validator.isEmpty(retrieveRelationDetails) || retrieveRelationDetails.length !== 0){
             retrieveRelationDetails.forEach(friend => {
-                userIdList.push((friend.userOneId !== req.body.requestUserId)? friend.userOneId : friend.userTwoId);
+                userIdList.push((friend.userOneId != req.params.requestUserId)? friend.userOneId : friend.userTwoId);
             });
             // console.log(userIdList);
             UserModel.find({userId : {$in : userIdList }})
@@ -244,7 +244,7 @@ let findPendingFriendsByUserId = (req, res) => {
         }
         if(!validator.isEmpty(retrieveRelationDetails) || retrieveRelationDetails.length !== 0){
             retrieveRelationDetails.forEach(friend => {
-                userIdList.push((friend.userOneId !== req.body.requestUserId)? friend.userOneId : friend.userTwoId);
+                userIdList.push((friend.userOneId !== req.params.requestUserId)? friend.userOneId : friend.userTwoId);
             });
             console.log(userIdList);
             UserModel.find({userId : {$in : userIdList }})

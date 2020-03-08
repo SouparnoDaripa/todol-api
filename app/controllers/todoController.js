@@ -15,7 +15,7 @@ let createTodo = (req, res) => {
                     let apiResponse = response.generateResponse(true, 'Error in saving the Todo', 500, null);
                     reject(apiResponse);
                 } else if(validator.isEmpty(retrieveTodoDetail)){
-                    
+                    console.log(req.body.sharedWith);
                     let newTodo = new TodoModel({
                         todoId : shortid.generate(),
                         title : req.body.title,
@@ -25,7 +25,7 @@ let createTodo = (req, res) => {
                         list : JSON.parse(req.body.list),
                         createdBy : req.body.createdBy,
                         updatedBy : req.body.modifiedBy,
-                        sharedWith : req.body.sharedWith,
+                        sharedWith : req.body.sharedWith.split(','),
                         createdOn : time.getLocalTime(),
                         modifiedOn : time.getLocalTime()
                     });
@@ -62,8 +62,9 @@ let createTodo = (req, res) => {
 let updateTodo = (req, res) => {
     let updateOldTodo = () => {
         return new Promise((resolve, reject) => {
+            let id = (req.body.parentId != undefined || req.body.parentId != null || req.body.parentId != '')? req.body.parentId : req.body.todoId;
             TodoModel.find({sharedWith: req.body.createdBy, 
-                                $or: [{parentId: req.body.parentId || ''}, {todoId : req.body.todoId}]})
+                                $or: [{parentId: id}, {todoId : req.body.todoId}]})
             .exec((err, retrieveTodoDetails) => {
                 if(err) {
                     console.log(err);
@@ -108,6 +109,7 @@ let updateTodo = (req, res) => {
                     maxVersion = retrieveTodoDetail[0].version;
                     console.log(retrieveTodoDetail[0]);
                     console.log(maxVersion);
+                    console.log(req.body.sharedWith);
                     let newVTodo = new TodoModel({
                         todoId : shortid.generate(),
                         title : req.body.title,
@@ -117,18 +119,19 @@ let updateTodo = (req, res) => {
                         list : JSON.parse(req.body.list),
                         createdBy : req.body.createdBy,
                         modifiedBy : req.body.modifiedBy,
-                        sharedWith : req.body.sharedWith,
+                        sharedWith : req.body.sharedWith.split(','),
                         createdOn : time.getLocalTime(),
                         modifiedOn : time.getLocalTime()
                     });
-                    // console.log(newVTodo);
+                    console.log(newVTodo);
                     newVTodo.save((err, newVTodo) => {
                         //console.log(" save new version of Todo..");
                         if (err){
-                            //console.log(err);
+                            console.log(err);
                             let apiResponse = response.generateResponse(true, 'Failed to save the new version of Todo', 500, null);
                             reject(apiResponse);
                         } else{
+                            console.log(" save new version of Todo..");
                             let newVTodoObj = newVTodo.toObject();
                             resolve(newVTodoObj);
                         }
